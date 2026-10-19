@@ -22,14 +22,12 @@ from homeassistant.const import (
     UnitOfTime,
 )
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers.device_registry import CONNECTION_BLUETOOTH, DeviceInfo
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
-from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from . import VictronConfigEntry
 from . import registers as r
-from .const import DOMAIN, MANUFACTURER
 from .coordinator import VictronCoordinator, VictronData
+from .entity import VictronEntity
 
 V = UnitOfElectricPotential.VOLT
 A = UnitOfElectricCurrent.AMPERE
@@ -291,26 +289,12 @@ async def async_setup_entry(
     entry.async_on_unload(coordinator.async_add_listener(add_new))
 
 
-class VictronSensor(CoordinatorEntity[VictronCoordinator], SensorEntity):
-    _attr_has_entity_name = True
+class VictronSensor(VictronEntity, SensorEntity):
     entity_description: VictronSensorDescription
 
     def __init__(self, coordinator: VictronCoordinator, description: VictronSensorDescription) -> None:
-        super().__init__(coordinator)
+        super().__init__(coordinator, description.key)
         self.entity_description = description
-        address = coordinator.address
-        self._attr_unique_id = f"{address}_{description.key}"
-        data = coordinator.data
-        self._attr_device_info = DeviceInfo(
-            identifiers={(DOMAIN, address)},
-            connections={(CONNECTION_BLUETOOTH, address)},
-            name=coordinator.config_entry.title,
-            manufacturer=MANUFACTURER,
-            model=data.model,
-            model_id=f"0x{data.product_id:04X}" if data.product_id is not None else None,
-            serial_number=data.serial,
-            sw_version=data.firmware,
-        )
 
     @property
     def native_value(self) -> Any:

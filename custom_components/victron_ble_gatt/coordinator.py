@@ -17,11 +17,13 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, Upda
 from . import registers as r
 from .client import Session, VictronSmartError
 from .const import (
+    CONF_ALLOW_CONTROL,
     CONF_PAIR,
     CONF_SCAN_INTERVAL,
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
     HISTORY_REFRESH_SECONDS,
+    MIN_WRITE_INTERVAL,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -63,10 +65,47 @@ class VictronCoordinator(DataUpdateCoordinator[VictronData]):
         self._unsupported: set[int] = set()
         self._identity_read = False
         self._history_read: float | None = None
+        self._last_write: dict[int, float] = {}
 
     @property
     def pair(self) -> bool:
         return bool(self.config_entry.options.get(CONF_PAIR, True))
+
+    @property
+    def allow_control(self) -> bool:
+        return bool(self.config_entry.options.get(CONF_ALLOW_CONTROL, False))
+
+    async def async_write(self, register: r.Register, value: float | int) -> None:
+        """Write a setting to the charger, check the echo and update the entities."""
+        if not self.allow_control:
+            raise VictronSmartError("control is turned off for this charger (Configure)")
+        if self._instance is None:
+            raise VictronSmartError("the charger has not been read yet")
+        raw = r.encode(register, value)
+        if self._data.raw.get(register.vreg) == raw:
+            return  # unchanged: don't wear the charger's settings memory
+        now = time.monotonic()
+        last = self._last_write.get(register.vreg)
+        # Only the current limit is rate limited: it is the setting automations tend to
+        # adjust repeatedly, and turning charging back on must never be blocked.
+        if register is r.CHARGE_CURRENT_LIMIT and last is not None and now - last < MIN_WRITE_INTERVAL:
+            raise VictronSmartError(
+                f"this setting was changed {now - last:.0f} s ago; wait {MIN_WRITE_INTERVAL} s between changes"
+            )
+        async with self.lock:
+            session = await self.open_session()
+            async with session:
+                await session.subscribe(self._instance)
+                echoed = await session.set_value(self._instance, register.vreg, raw)
+        self._last_write[register.vreg] = now
+        if echoed != raw:
+            raise VictronSmartError(
+                f"charger kept 0x{register.vreg:04X} at {r.decode(register, echoed)} instead of {value}"
+            )
+        _LOGGER.info("%s set 0x%04X to %s", self.address, register.vreg, value)
+        self._data.raw[register.vreg] = echoed
+        self._data.values[register.vreg] = r.decode(register, echoed)
+        self.async_set_updated_data(self._data)
 
     def ble_device(self):
         return bluetooth.async_ble_device_from_address(self.hass, self.address, connectable=True)

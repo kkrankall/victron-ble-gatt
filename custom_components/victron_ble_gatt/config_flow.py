@@ -15,6 +15,7 @@ from homeassistant.const import CONF_ADDRESS
 from homeassistant.core import callback
 
 from .const import (
+    CONF_ALLOW_CONTROL,
     CONF_PAIR,
     CONF_SCAN_INTERVAL,
     DEFAULT_SCAN_INTERVAL,
@@ -110,6 +111,9 @@ class VictronOptionsFlow(OptionsFlow):
                         default=options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL),
                     ): vol.All(vol.Coerce(int), vol.Range(min=MIN_SCAN_INTERVAL, max=3600)),
                     vol.Required(CONF_PAIR, default=options.get(CONF_PAIR, True)): bool,
+                    vol.Required(
+                        CONF_ALLOW_CONTROL, default=options.get(CONF_ALLOW_CONTROL, False)
+                    ): bool,
                 }
             ),
         )

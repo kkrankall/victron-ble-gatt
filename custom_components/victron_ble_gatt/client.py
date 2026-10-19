@@ -257,6 +257,34 @@ class Session:
                 return instance
         return None
 
+    async def set_value(
+        self, instance: int, vreg: int, raw: bytes, timeout: float = REPLY_TIMEOUT
+    ) -> bytes:
+        """Write a register; return the value the charger echoes back.
+
+        The charger answers a write with a Value message carrying the
+        register's new contents (verified on SmartSolar 250/100 and 150/45),
+        or a ValueResponse with an error code if it refuses.
+        """
+        start = len(self.messages)
+        await self.send(p.set_value(instance, vreg, raw))
+
+        def answered(msgs: list[list[Any]]) -> bool:
+            return any(
+                m[0] in (p.OP_VALUE, p.OP_VALUE_RESPONSE) and len(m) >= 4 and m[1] == instance and m[2] == vreg
+                for m in msgs[start:]
+            )
+
+        if not await self.wait_for(answered, timeout):
+            raise VictronSmartError(f"no answer to the write of 0x{vreg:04X}")
+        for msg in self.messages[start:]:
+            if len(msg) >= 4 and msg[1] == instance and msg[2] == vreg:
+                if msg[0] == p.OP_VALUE_RESPONSE:
+                    raise VictronSmartError(f"charger refused 0x{vreg:04X} (code {msg[3]})")
+                if msg[0] == p.OP_VALUE:
+                    return bytes(msg[3])
+        raise VictronSmartError(f"no value echoed for 0x{vreg:04X}")  # pragma: no cover
+
     async def keep_alive(self) -> None:
         await self.send(p.keep_alive())
 

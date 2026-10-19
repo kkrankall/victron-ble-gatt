@@ -18,7 +18,7 @@ from .client import VictronSmartError
 from .const import DOMAIN
 from .coordinator import VictronCoordinator
 
-PLATFORMS = [Platform.SENSOR]
+PLATFORMS = [Platform.NUMBER, Platform.SENSOR, Platform.SWITCH]
 
 type VictronConfigEntry = ConfigEntry[VictronCoordinator]
 

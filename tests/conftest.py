@@ -71,6 +71,8 @@ class FakeMppt:
             0x1052: _day(170, 300),
         }
         self.connections = 0
+        self.writes: list[tuple[int, bytes]] = []
+        self.refuse: set[int] = set()
         self.requests: list[list] = []
         self.grants: list[bytes] = []
 
@@ -129,6 +131,14 @@ class FakeClient:
         if op == p.OP_GET_DEVICES:
             # as captured from Array1: indefinite array, BLE module 0, UART 1, charger 3
             return [bytes.fromhex("029f000001000301ff")]
+        if op == p.OP_SET_VALUE:
+            vreg, raw = msg[2]
+            if vreg in self.mppt.refuse:
+                return [p.cbor_encode_seq(p.OP_VALUE_RESPONSE, msg[1], vreg, 0x8300)]
+            self.mppt.registers[vreg] = raw
+            self.mppt.writes.append((vreg, raw))
+            # the real charger echoes the register's new contents
+            return [p.cbor_encode_seq(p.OP_VALUE, msg[1], vreg, raw)]
         if op == p.OP_SUBSCRIBE:
             self.subscribed.add(msg[1])
             return [p.cbor_encode_seq(p.OP_RESPONSE, 0, p.OP_SUBSCRIBE, 0)]

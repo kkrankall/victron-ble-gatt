@@ -23,11 +23,13 @@
       "init": {
         "data": {
           "scan_interval": "Seconds between readings",
-          "pair": "Pair (bond) before reading"
+          "pair": "Pair (bond) before reading",
+          "allow_control": "Allow control"
         },
         "data_description": {
           "scan_interval": "Each reading opens a short Bluetooth connection. While it is open, VictronConnect on a phone cannot connect.",
-          "pair": "Victron chargers require PIN pairing. Through an ESPHome Bluetooth proxy the proxy must answer the PIN itself (see README)."
+          "pair": "Victron chargers require PIN pairing. Through an ESPHome Bluetooth proxy the proxy must answer the PIN itself (see README).",
+          "allow_control": "Adds a Charging switch and a Charge current limit you can change from Home Assistant. Both change the charger's saved settings, which stay in effect even if Home Assistant goes offline."
         }
       }
     }
@@ -267,6 +269,16 @@
           "on": "On",
           "off": "Off"
         }
+      }
+    },
+    "switch": {
+      "charging": {
+        "name": "Charging"
+      }
+    },
+    "number": {
+      "charge_current_limit": {
+        "name": "Charge current limit"
       }
     }
   },

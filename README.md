@@ -32,11 +32,32 @@ One device per charger, with sensors for the registers the charger supports:
 | Lifetime | Max PV voltage, min/max battery voltage, last errors |
 | Daily history | One sensor whose `days` attribute holds the last 31 daily records (yield, max power, times, voltages, errors) |
 | Settings (diagnostic) | Battery voltage, charge current limit, absorption and float voltage, rated charge current, uptime |
+| Controls (opt-in) | Charging on/off switch, charge current limit (see below) |
 
 Every reading opens a short connection (about 3–4 s), every 60 seconds by
 default (**Configure** to change it). The 30-day history is refreshed hourly.
 While a reading is in progress, VictronConnect on a phone cannot connect, and
 the other way round.
+
+## Controls (opt-in)
+
+Turn on **Allow control** under **Configure** to add two entities per charger:
+
+| Entity | Writes | Notes |
+| --- | --- | --- |
+| `switch.<charger>_charging` | Device mode (`0x0200`): on = 1, off = 4 | Off stops charging; the charger then reports "soft power switch" as its off reason. |
+| `number.<charger>_charge_current_limit` | Max charge current (`0xEDF0`), 1 A up to the charger's rating | The same setting as VictronConnect's charge current slider. |
+
+Every write is confirmed: the charger echoes the register's new value and
+the integration checks it, so a refused or ignored write shows an error
+instead of a stale state.
+
+Both are the charger's **saved settings**, not temporary overrides. They
+stay in effect through power cycles and if Home Assistant goes offline, so
+an automation that throttles charging should also restore the limit. To
+spare the charger's settings memory, writing the value it already has is
+skipped and the current limit can change at most once every 10 seconds.
+A Victron GX with DVCC can override the current limit.
 
 ## Requirements
 
@@ -112,7 +133,8 @@ the solar charger screens) and verified on the hardware.
   A chunk longer than the ATT length is split: continuation pieces to
   `…0004`, the last piece to `…0003`.
   - Requests: `1` get device list, `3 inst` subscribe, `5 inst [vregs]`
-    get values, `6 inst [vreg, bytes]` set value.
+    get values, `6 inst [vreg, bytes]` set value (answered with a value
+    message echoing the register's new contents).
   - Replies: `2 [inst, type, ...]` device list (indefinite-length array),
     `7 x op result` response, `8 inst vreg bytes` value, `9 inst vreg err`
     value error.

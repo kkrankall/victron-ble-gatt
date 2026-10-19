@@ -48,6 +48,12 @@ def decode(register: Register, raw: bytes) -> Any:
     return value / register.scale if register.scale != 1 else value
 
 
+def encode(register: Register, value: float | int) -> bytes:
+    """Raw little-endian bytes for writing ``value`` to a numeric register."""
+    fmt, _na = _FORMATS[register.kind]
+    return struct.pack(fmt, round(value * register.scale))
+
+
 # Device identification
 PRODUCT_ID = Register(0x0100, "raw")
 APP_VERSION = Register(0x0102, "raw")
@@ -217,6 +223,8 @@ DEVICE_STATES = {
 MPP_MODES = {0: "off", 1: "limited", 2: "tracking"}
 
 DEVICE_MODES = {1: "on", 4: "off"}
+MODE_ON = 1
+MODE_OFF = 4
 
 # VE.Direct / VE.Smart charger error codes
 CHARGER_ERRORS = {
