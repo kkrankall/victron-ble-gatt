@@ -251,6 +251,46 @@ CHARGER_ERRORS = {
     119: "user_settings_invalid",
 }
 
+# Readable names for free-text states (the error history); same codes as above
+CHARGER_ERROR_TEXT = {
+    2: "Battery voltage too high",
+    3: "Remote temperature sensor failure",
+    4: "Remote temperature sensor failure",
+    5: "Remote temperature sensor failure",
+    6: "Remote battery voltage sense failure",
+    7: "Remote battery voltage sense failure",
+    8: "Remote battery voltage sense failure",
+    11: "Battery high ripple voltage",
+    14: "Battery temperature too low",
+    17: "Charger temperature too high",
+    18: "Charger over current",
+    19: "Charger current reversed",
+    20: "Bulk time limit exceeded",
+    21: "Current sensor issue",
+    26: "Terminals overheated",
+    28: "Converter issue",
+    33: "Input voltage too high (solar panel)",
+    34: "Input current too high (solar panel)",
+    38: "Input shutdown (battery voltage too high)",
+    39: "Input shutdown (current flow during off mode)",
+    40: "Input shutdown",
+    65: "Lost communication with a synchronised device",
+    66: "Synchronised charging configuration issue",
+    67: "BMS connection lost",
+    68: "Network misconfigured",
+    116: "Factory calibration data lost",
+    117: "Invalid or incompatible firmware",
+    119: "User settings invalid",
+}
+
+
+def error_text(codes: list[int]) -> str:
+    """Readable list of charger error codes, in the order the charger reports them."""
+    if not codes:
+        return "None"
+    return ", ".join(CHARGER_ERROR_TEXT.get(c, f"Error {c}") for c in codes)
+
+
 OFF_REASONS = {
     0x01: "no_input_power",
     0x02: "hard_power_switch",

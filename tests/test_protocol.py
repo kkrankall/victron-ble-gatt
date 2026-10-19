@@ -86,3 +86,10 @@ def test_history():
     assert d["yield"] == 6.3 and d["consumed"] is None and d["max_power"] == 845
     assert d["time_in_absorption"] == 95 and d["max_battery_current"] == 21.2
     assert r.decode_history_day(b"\xff" + bytes(33)) is None
+
+
+def test_error_text():
+    # Array2's real lifetime error log
+    assert r.error_text([2, 38]) == "Battery voltage too high, Input shutdown (battery voltage too high)"
+    assert r.error_text([]) == "None"
+    assert r.error_text([250]) == "Error 250"

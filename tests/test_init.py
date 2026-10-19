@@ -66,6 +66,8 @@ async def test_sensors(hass: HomeAssistant, setup, mppt):
     assert mppt.grants[:2] == [p.CTRL_HELLO, bytes([0xF9, 0x80])]
     assert mppt.requests[0] == [p.OP_GET_DEVICES]
     assert state("charger_mode") == "on"
+    assert state("last_errors") == "None"
+    assert hass.states.get("sensor.array1_last_errors").attributes["codes"] == []
     (device,) = dr.async_entries_for_config_entry(dr.async_get(hass), setup.entry_id)
     assert device.sw_version == "3.18"
     assert device.model == "SmartSolar MPPT VE.Can 150/70"

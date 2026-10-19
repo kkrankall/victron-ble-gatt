@@ -234,11 +234,9 @@ SENSORS: list[VictronSensorDescription] = [
     VictronSensorDescription(
         key="last_errors",
         translation_key="last_errors",
-        value_fn=lambda d: ", ".join(
-            r.CHARGER_ERRORS.get(e, str(e)) for e in (d.total or {}).get("last_errors", [])
-        )
-        or "none",
+        value_fn=lambda d: r.error_text((d.total or {}).get("last_errors", [])),
         exists_fn=lambda d: d.total is not None,
+        attrs_fn=lambda d: {"codes": (d.total or {}).get("last_errors", [])},
         **DIAG,
     ),
     VictronSensorDescription(
