@@ -62,7 +62,7 @@ class VictronCoordinator(DataUpdateCoordinator[VictronData]):
         self._instance: int | None = None
         self._unsupported: set[int] = set()
         self._identity_read = False
-        self._history_read = 0.0
+        self._history_read: float | None = None
 
     @property
     def pair(self) -> bool:
@@ -114,7 +114,10 @@ class VictronCoordinator(DataUpdateCoordinator[VictronData]):
             if not self._identity_read:
                 vregs += [reg.vreg for reg in r.IDENTITY]
             vregs += [r.HISTORY_TOTAL, r.HISTORY_DAY0, r.HISTORY_DAY0 + 1]
-            history_due = time.monotonic() - self._history_read > HISTORY_REFRESH_SECONDS
+            history_due = (
+                self._history_read is None
+                or time.monotonic() - self._history_read > HISTORY_REFRESH_SECONDS
+            )
             if history_due:
                 vregs += [r.HISTORY_DAY0 + d for d in range(2, r.HISTORY_DAYS)]
             if not self._identity_read or (data.values.get(r.TRACKERS.vreg) or 0) > 1:

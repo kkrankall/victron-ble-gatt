@@ -1,5 +1,7 @@
 """Discovery, setup, sensors and the probe action against the simulated MPPT."""
 
+from unittest.mock import patch
+
 from homeassistant.config_entries import SOURCE_BLUETOOTH
 from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResultType
@@ -15,13 +17,19 @@ from .conftest import ADDRESS, inject, service_info
 
 @pytest.fixture
 async def setup(hass: HomeAssistant, enable_bluetooth, mppt):
+    # history must be read on the first poll even right after the host booted
+    patcher = patch(
+        "custom_components.victron_ble_gatt.coordinator.time.monotonic", return_value=10.0
+    )
+    patcher.start()
     inject(hass, service_info(manufacturer_id=None))
     await hass.async_block_till_done()
     entry = MockConfigEntry(domain=DOMAIN, unique_id=ADDRESS, title="Array1", data={"address": ADDRESS})
     entry.add_to_hass(hass)
     assert await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()
-    return entry
+    yield entry
+    patcher.stop()
 
 
 async def test_bluetooth_discovery(hass: HomeAssistant, enable_bluetooth):
