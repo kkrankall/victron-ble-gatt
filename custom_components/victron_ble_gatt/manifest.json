@@ -1,0 +1,14 @@
+{
+  "domain": "victron_ble_gatt",
+  "name": "Victron BLE (GATT)",
+  "bluetooth": [{ "manufacturer_id": 737, "connectable": true }],
+  "codeowners": ["@kkrankall"],
+  "config_flow": true,
+  "dependencies": ["bluetooth_adapters"],
+  "documentation": "https://github.com/kkrankall/victron-ble-gatt",
+  "integration_type": "device",
+  "iot_class": "local_polling",
+  "issue_tracker": "https://github.com/kkrankall/victron-ble-gatt/issues",
+  "requirements": [],
+  "version": "0.1.0"
+}

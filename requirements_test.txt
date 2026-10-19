@@ -1,0 +1,7 @@
+# Home Assistant 2026.10.1 test harness plus the bluetooth/usb component requirements.
+pytest-homeassistant-custom-component==0.13.372
+aiousbwatcher==1.1.2
+bluetooth-adapters==2.4.0
+bluetooth-auto-recovery==1.6.4
+dbus-fast==5.0.22
+serialx==1.11.0

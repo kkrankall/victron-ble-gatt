@@ -1,0 +1,317 @@
+{
+  "config": {
+    "flow_title": "{name}",
+    "step": {
+      "user": {
+        "description": "Choose the Victron device to read over Bluetooth.",
+        "data": {
+          "address": "Device"
+        }
+      },
+      "bluetooth_confirm": {
+        "description": "Read every value from {name} over a Bluetooth connection?"
+      }
+    },
+    "abort": {
+      "already_configured": "This device is already configured.",
+      "no_devices_found": "No Victron devices were heard by a connectable Bluetooth adapter or proxy.",
+      "not_supported": "This is not a Victron device."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "data": {
+          "scan_interval": "Seconds between readings",
+          "pair": "Pair (bond) before reading"
+        },
+        "data_description": {
+          "scan_interval": "Each reading opens a short Bluetooth connection. While it is open, VictronConnect on a phone cannot connect.",
+          "pair": "Victron chargers require PIN pairing. Through an ESPHome Bluetooth proxy the proxy must answer the PIN itself (see README)."
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "pv_power": {
+        "name": "PV power"
+      },
+      "pv_voltage": {
+        "name": "PV voltage"
+      },
+      "pv_current": {
+        "name": "PV current"
+      },
+      "battery_voltage": {
+        "name": "Charge voltage"
+      },
+      "battery_current": {
+        "name": "Charge current"
+      },
+      "battery_temperature": {
+        "name": "Battery temperature"
+      },
+      "charger_temperature": {
+        "name": "Charger temperature"
+      },
+      "state": {
+        "name": "Charger state",
+        "state": {
+          "off": "Off",
+          "low_power": "Low power",
+          "fault": "Fault",
+          "bulk": "Bulk",
+          "absorption": "Absorption",
+          "float": "Float",
+          "storage": "Storage",
+          "equalize": "Equalize",
+          "starting_up": "Starting up",
+          "auto_equalize": "Auto equalize",
+          "external_control": "External control"
+        }
+      },
+      "error": {
+        "name": "Error",
+        "state": {
+          "no_error": "No error",
+          "battery_voltage_too_high": "Battery voltage too high",
+          "remote_temperature_sensor_failure": "Remote temperature sensor failure",
+          "remote_battery_voltage_sense_failure": "Remote battery voltage sense failure",
+          "battery_high_ripple_voltage": "Battery high ripple voltage",
+          "battery_temperature_too_low": "Battery temperature too low",
+          "charger_temperature_too_high": "Charger temperature too high",
+          "charger_over_current": "Charger over current",
+          "charger_current_reversed": "Charger current reversed",
+          "bulk_time_limit_exceeded": "Bulk time limit exceeded",
+          "current_sensor_issue": "Current sensor issue",
+          "terminals_overheated": "Terminals overheated",
+          "converter_issue": "Converter issue",
+          "input_voltage_too_high": "Input voltage too high",
+          "input_current_too_high": "Input current too high",
+          "input_shutdown_battery_voltage": "Input shutdown battery voltage",
+          "input_shutdown_current_flow": "Input shutdown current flow",
+          "input_shutdown": "Input shutdown",
+          "lost_communication": "Lost communication",
+          "synchronised_charging_config_issue": "Synchronised charging config issue",
+          "bms_connection_lost": "BMS connection lost",
+          "network_misconfigured": "Network misconfigured",
+          "factory_calibration_data_lost": "Factory calibration data lost",
+          "invalid_firmware": "Invalid firmware",
+          "user_settings_invalid": "User settings invalid"
+        }
+      },
+      "mpp_mode": {
+        "name": "Tracker mode",
+        "state": {
+          "off": "Off",
+          "limited": "Voltage or current limited",
+          "tracking": "MPP tracking"
+        }
+      },
+      "off_reason": {
+        "name": "Off reason"
+      },
+      "load_current": {
+        "name": "Load current"
+      },
+      "load_state": {
+        "name": "Load output",
+        "state": {
+          "off": "Off",
+          "on": "On"
+        }
+      },
+      "relay_state": {
+        "name": "Relay",
+        "state": {
+          "open": "Open",
+          "closed": "Closed"
+        }
+      },
+      "pv_isolation_resistance": {
+        "name": "PV isolation resistance"
+      },
+      "uptime": {
+        "name": "Uptime"
+      },
+      "yield_today": {
+        "name": "Solar yield today"
+      },
+      "max_power_today": {
+        "name": "Max power today"
+      },
+      "yield_yesterday": {
+        "name": "Solar yield yesterday"
+      },
+      "max_power_yesterday": {
+        "name": "Max power yesterday"
+      },
+      "total_yield": {
+        "name": "Solar yield total"
+      },
+      "system_yield": {
+        "name": "Solar yield (system)"
+      },
+      "time_in_bulk_today": {
+        "name": "Time in bulk today"
+      },
+      "time_in_absorption_today": {
+        "name": "Time in absorption today"
+      },
+      "time_in_float_today": {
+        "name": "Time in float today"
+      },
+      "max_battery_voltage_today": {
+        "name": "Max battery voltage today"
+      },
+      "min_battery_voltage_today": {
+        "name": "Min battery voltage today"
+      },
+      "max_battery_current_today": {
+        "name": "Max battery current today"
+      },
+      "max_pv_voltage_today": {
+        "name": "Max PV voltage today"
+      },
+      "time_in_bulk_yesterday": {
+        "name": "Time in bulk yesterday"
+      },
+      "time_in_absorption_yesterday": {
+        "name": "Time in absorption yesterday"
+      },
+      "time_in_float_yesterday": {
+        "name": "Time in float yesterday"
+      },
+      "max_battery_voltage_yesterday": {
+        "name": "Max battery voltage yesterday"
+      },
+      "min_battery_voltage_yesterday": {
+        "name": "Min battery voltage yesterday"
+      },
+      "max_battery_current_yesterday": {
+        "name": "Max battery current yesterday"
+      },
+      "max_pv_voltage_yesterday": {
+        "name": "Max PV voltage yesterday"
+      },
+      "max_pv_voltage_overall": {
+        "name": "Max PV voltage (lifetime)"
+      },
+      "max_battery_voltage_overall": {
+        "name": "Max battery voltage (lifetime)"
+      },
+      "min_battery_voltage_overall": {
+        "name": "Min battery voltage (lifetime)"
+      },
+      "last_errors": {
+        "name": "Last errors"
+      },
+      "history": {
+        "name": "Daily history"
+      },
+      "battery_voltage_setting": {
+        "name": "Battery voltage setting"
+      },
+      "charge_current_limit": {
+        "name": "Charge current limit"
+      },
+      "absorption_voltage": {
+        "name": "Absorption voltage"
+      },
+      "float_voltage": {
+        "name": "Float voltage"
+      },
+      "max_charger_current": {
+        "name": "Rated charge current"
+      },
+      "tracker_1_voltage": {
+        "name": "Tracker 1 voltage"
+      },
+      "tracker_1_current": {
+        "name": "Tracker 1 current"
+      },
+      "tracker_1_power": {
+        "name": "Tracker 1 power"
+      },
+      "tracker_2_voltage": {
+        "name": "Tracker 2 voltage"
+      },
+      "tracker_2_current": {
+        "name": "Tracker 2 current"
+      },
+      "tracker_2_power": {
+        "name": "Tracker 2 power"
+      },
+      "tracker_3_voltage": {
+        "name": "Tracker 3 voltage"
+      },
+      "tracker_3_current": {
+        "name": "Tracker 3 current"
+      },
+      "tracker_3_power": {
+        "name": "Tracker 3 power"
+      },
+      "tracker_4_voltage": {
+        "name": "Tracker 4 voltage"
+      },
+      "tracker_4_current": {
+        "name": "Tracker 4 current"
+      },
+      "tracker_4_power": {
+        "name": "Tracker 4 power"
+      },
+      "mode": {
+        "name": "Charger mode",
+        "state": {
+          "on": "On",
+          "off": "Off"
+        }
+      }
+    }
+  },
+  "services": {
+    "probe": {
+      "name": "Probe",
+      "description": "Connect to a configured charger, run requests and return the raw exchange. For troubleshooting.",
+      "fields": {
+        "address": {
+          "name": "Address",
+          "description": "Bluetooth address of a configured charger."
+        },
+        "vregs": {
+          "name": "Registers",
+          "description": "Register IDs to read, such as 0xEDBB."
+        },
+        "requests": {
+          "name": "Raw requests",
+          "description": "Hex-encoded CBOR chunks to send as they are."
+        },
+        "instance": {
+          "name": "Instance",
+          "description": "Device instance; defaults to the first in the device list."
+        },
+        "get_devices": {
+          "name": "Get device list",
+          "description": "Ask for the device list first."
+        },
+        "keep_alive": {
+          "name": "Keep alive",
+          "description": "Send the keep-alive register."
+        },
+        "subscribe": {
+          "name": "Subscribe",
+          "description": "Subscribe to the instance before reading."
+        },
+        "pair": {
+          "name": "Pair",
+          "description": "Pair (bond) before reading."
+        },
+        "listen": {
+          "name": "Listen",
+          "description": "Seconds to keep listening after the requests."
+        }
+      }
+    }
+  }
+}

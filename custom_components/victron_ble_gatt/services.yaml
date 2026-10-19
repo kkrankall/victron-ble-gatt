@@ -1,0 +1,42 @@
+probe:
+  fields:
+    address:
+      required: true
+      example: "F6:38:A2:A5:C8:70"
+      selector:
+        text:
+    vregs:
+      example: "[0xEDBB, 0xEDBC]"
+      selector:
+        object:
+    requests:
+      selector:
+        object:
+    instance:
+      selector:
+        number:
+          min: 0
+          max: 255
+    get_devices:
+      default: true
+      selector:
+        boolean:
+    keep_alive:
+      default: true
+      selector:
+        boolean:
+    subscribe:
+      default: true
+      selector:
+        boolean:
+    pair:
+      default: false
+      selector:
+        boolean:
+    listen:
+      default: 2
+      selector:
+        number:
+          min: 0
+          max: 30
+          unit_of_measurement: s
