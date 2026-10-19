@@ -13,7 +13,10 @@ both can run side by side.
 Tested on a SmartSolar MPPT VE.Can 250/100 (firmware 3.18) and a SmartSolar
 MPPT 150/45 (firmware 1.68) through an ESPHome Bluetooth proxy.
 
-Not affiliated with or endorsed by Victron Energy.
+Not affiliated with or endorsed by Victron Energy. The Victron Energy name and
+logo (the integration icon, the same images Home Assistant uses for its own
+Victron BLE integration) are trademarks of Victron Energy B.V., used here only
+to identify the devices this integration works with.
 
 ## What you get
 
